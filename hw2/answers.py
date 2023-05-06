@@ -12,26 +12,25 @@ part1_q1 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+1.A. Since the jacobain tensor represents the derivatives Y w.r.t X, and the size of Y is (64, 512) and the size of X is (64, 1024), it should take into account each sample in the batch and each output feature w.r.t each sample in the batch and each output feature, So - (64, 512, 64, 1024).
 
+1.B. It is sparse since the samples are unrelated to each other, each derivative of output feature of one sample w.r.t input feature of another sample we be zero, since they are not related. So most of the valuess in the tensor will be zero.
+
+1.C. No, we don't need to materialize the above Jacobian in order to calculate the downstream gratdient w.r.t. to the input, since we have $\pderiv{L}{\mat{Y}}$: todododo
+$\delta\mat{X}$ = $\pderiv{L}{\mat{X}}$ = $\pderiv{L}{\mat{Y}}$$\pderiv{Y}{\mat{X}}$ = $\delta\mat{Y}$$\pderiv{Y}{\mat{X}}$
+
+
+2.A. Since the jacobain tensor represents the derivatives Y w.r.t W, and the size of Y is (64, 512) and the size of W is (512, 1024), so like before, we will get the shape of (64, 512, 512, 1024).
+
+2.B. 
+
+2.C. No, we don't need to materialize the above Jacobian in order to calculate the downstream gratdient w.r.t. to the weights, since we have $\pderiv{L}{\mat{Y}}$:
 """
 
 part1_q2 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+No, back-propagation isn’t required in order to train neural networks with decent-based optimization, since we can allways calculate the entire derivative without using the chain rule (Although it is an awful idea).
 """
 
 
