@@ -80,12 +80,14 @@ class Trainer(abc.ABC):
                 verbose = True
             self._print(f"--- EPOCH {epoch+1}/{num_epochs} ---", verbose)
 
-            # TODO: Train & evaluate for one epoch
-            #  - Use the train/test_epoch methods.
-            #  - Save losses and accuracies in the lists above.
-            # ====== YOUR CODE: ======
-            raise NotImplementedError()
-            # ========================
+            train = self.train_epoch(dl_train, **kw)
+            test = self.test_epoch(dl_test, **kw)
+
+            train_loss.extend(train.losses)
+            test_loss.extend(test.losses)
+
+            train_acc.append(train.accuracy)
+            test_acc.append(test.accuracy)
 
             # TODO:
             #  - Optional: Implement early stopping. This is a very useful and
@@ -93,14 +95,14 @@ class Trainer(abc.ABC):
             #  - Optional: Implement checkpoints. You can use the save_checkpoint
             #    method on this class to save the model to the file specified by
             #    the checkpoints argument.
-            if best_acc is None or test_result.accuracy > best_acc:
-                # ====== YOUR CODE: ======
-                raise NotImplementedError()
-                # ========================
+            if best_acc is None or test.accuracy > best_acc:
+                best_acc = test.accuracy
+                epochs_without_improvement = 0
+                #self.save_checkpoint(checkpoints)
             else:
-                # ====== YOUR CODE: ======
-                raise NotImplementedError()
-                # ========================
+                #if epochs_without_improvement == early_stopping and epochs_without_improvement != 0:
+                    #self.model = torch.load(checkpoints) #dangaras
+                epochs_without_improvement += 1
 
         return FitResult(actual_num_epochs, train_loss, train_acc, test_loss, test_acc)
 

@@ -83,24 +83,17 @@ class MomentumSGD(Optimizer):
         self.learn_rate = learn_rate
         self.reg = reg
         self.momentum = momentum
-
-        # TODO: Add your own initializations as needed.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        self.velocity = [0] * len(params)
         # ========================
 
     def step(self):
-        for p, dp in self.params:
+        for idx, (p, dp) in enumerate(self.params):
             if dp is None:
                 continue
 
-            # TODO: Implement the optimizer step.
-            # update the parameters tensor based on the velocity. Don't forget
-            # to include the regularization term.
-            # ====== YOUR CODE: ======
-            raise NotImplementedError()
-            # ========================
-
+            dp += self.reg * p
+            self.velocity[idx] = self.momentum * self.velocity[idx] - self.learn_rate * (dp)
+            p += self.velocity[idx]
 
 class RMSProp(Optimizer):
     def __init__(self, params, learn_rate=1e-3, reg=0, decay=0.99, eps=1e-8):
@@ -131,6 +124,3 @@ class RMSProp(Optimizer):
             # Create a per-parameter learning rate based on a decaying moving
             # average of it's previous gradients. Use it to update the
             # parameters tensor.
-            # ====== YOUR CODE: ======
-            raise NotImplementedError()
-            # ========================
