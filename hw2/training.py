@@ -40,6 +40,7 @@ class Trainer(abc.ABC):
         if self.device:
             model.to(self.device)
 
+            
     def fit(
         self,
         dl_train: DataLoader,
