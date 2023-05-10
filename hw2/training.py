@@ -143,7 +143,7 @@ class Trainer(abc.ABC):
         :return: A BatchResult containing the value of the loss function and
             the number of correctly classified samples in the batch.
         """
-        raise NotImplementedError()
+        return self.model(batch)
 
     @abc.abstractmethod
     def test_batch(self, batch) -> BatchResult:
@@ -285,31 +285,39 @@ class ClassifierTrainer(Trainer):
 
 class LayerTrainer(Trainer):
     def __init__(self, model, loss_fn, optimizer):
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        self.model = model
+        self.loss_fn = loss_fn
+        self.optimizer = optimizer
 
     def train_batch(self, batch) -> BatchResult:
         X, y = batch
 
-        # TODO: Train the Layer model on one batch of data.
-        #  - Forward pass
-        #  - Backward pass
-        #  - Optimize params
-        #  - Calculate number of correct predictions (make sure it's an int,
-        #    not a tensor) as num_correct.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        self.optimizer.zero_grad()
 
+        flat_X = X.view(X.shape[0], -1)
+        
+        yout = self.model.forward(flat_X)
+        
+        loss = self.loss_fn.forward(yout, y)
+
+        self.model.backward(self.loss_fn.backward())
+        self.optimizer.step()
+
+        num_correct = torch.sum(torch.argmax(yout, dim=1) == y).item()
         return BatchResult(loss, num_correct)
 
     def test_batch(self, batch) -> BatchResult:
         X, y = batch
 
-        # TODO: Evaluate the Layer model on one batch of data.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+
+        flat_X = X.view(X.shape[0], -1)
+        
+        yout = self.model.forward(flat_X)
+        
+        loss = self.loss_fn.forward(yout, y)
+
+        self.model.backward(self.loss_fn.backward())
+
+        num_correct = torch.sum(torch.argmax(yout, dim=1) == y).item()
 
         return BatchResult(loss, num_correct)

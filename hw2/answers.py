@@ -16,15 +16,16 @@ part1_q1 = r"""
 
 1.B. It is sparse since the samples are unrelated to each other, each derivative of output feature of one sample w.r.t input feature of another sample we be zero, since they are not related. So most of the valuess in the tensor will be zero.
 
-1.C. No, we don't need to materialize the above Jacobian in order to calculate the downstream gratdient w.r.t. to the input, since we have $\pderiv{L}{\mat{Y}}$: todododo
-$\delta\mat{X}$ = $\pderiv{L}{\mat{X}}$ = $\pderiv{L}{\mat{Y}}$$\pderiv{Y}{\mat{X}}$ = $\delta\mat{Y}$$\pderiv{Y}{\mat{X}}$
+1.C. No, we don't need to materialize the above Jacobian in order to calculate the downstream gratdient w.r.t. to the input, since get compute it by: $\delta\mat{X}$ = $\pderiv{L}{\mat{X}}$ = $\pderiv{L}{\mat{Y}}\cdot W^{T} $
 
 
 2.A. Since the jacobain tensor represents the derivatives Y w.r.t W, and the size of Y is (64, 512) and the size of W is (512, 1024), so like before, we will get the shape of (64, 512, 512, 1024).
 
-2.B. 
+2.B. TODO
 
-2.C. No, we don't need to materialize the above Jacobian in order to calculate the downstream gratdient w.r.t. to the weights, since we have $\pderiv{L}{\mat{Y}}$:
+2.C. No (like 1.C), we don't need to materialize the above Jacobian in order to calculate the downstream gratdient w.r.t. to the input, since get compute it by: $\delta\mat{W}$ = $\pderiv{L}{\mat{W}}$ = $\cdot X^{T}\pderiv{L}{\mat{Y}} $
+
+
 """
 
 part1_q2 = r"""
@@ -39,11 +40,8 @@ No, back-propagation isn’t required in order to train neural networks with dec
 
 
 def part2_overfit_hp():
-    wstd, lr, reg = 0, 0, 0
-    # TODO: Tweak the hyperparameters until you overfit the small dataset.
-    # ====== YOUR CODE: ======
-    raise NotImplementedError()
-    # ========================
+    wstd, lr, reg = 0.1, 0.01, 0.001
+
     return dict(wstd=wstd, lr=lr, reg=reg)
 
 
