@@ -107,7 +107,7 @@ class ReLU(LeakyReLU):
 
     #TODO: asafasf
     def __init__(self):
-        super().__init__(0)
+        super(ReLU, self).__init__(0)
 
     def __repr__(self):
         return "ReLU"
@@ -168,7 +168,6 @@ class TanH(Layer):
         out = (torch.exp(x) - torch.exp(-x)) / (torch.exp(x) + torch.exp(-x))
         self.grad_cache["out"] = out
 
-        
         return out
 
     def backward(self, dout):
@@ -178,9 +177,8 @@ class TanH(Layer):
         """
 
         out = self.grad_cache["out"]
-
-
         dx = dout * (1 - out**2)
+
         return dx
 
     def params(self):
@@ -305,22 +303,23 @@ class Dropout(Layer):
         self.p = p
 
     def forward(self, x, **kw):
-        # TODO: Implement the dropout forward pass.
-        #  Notice that contrary to previous layers, this layer behaves
-        #  differently a according to the current training_mode (train/test).
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        if self.training_mode != True:
+            return x
+
+        probs = torch.rand(x.shape)
+        out = torch.where(probs <= self.p, torch.zeros(x.shape), x)
+        
+        self.grad_cache["probs"] = probs
 
         return out
 
     def backward(self, dout):
-        # TODO: Implement the dropout backward pass.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        if self.training_mode != True:
+            return dout
 
-        return dx
+        probs = self.grad_cache["probs"]
+        
+        return torch.where(probs <= self.p, torch.zeros(dout.shape), dout)
 
     def params(self):
         return []
@@ -424,6 +423,9 @@ class MLP(Layer):
         for outpt in hidden_features:
             layers.append(Linear(inpt, outpt))
             layers.append(act())
+            if dropout > 0:
+                layers.append(Dropout(dropout))
+
             inpt = outpt
     
         layers.append(Linear(inpt, num_classes))
