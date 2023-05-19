@@ -44,9 +44,19 @@ def mlp_experiment(
     #    epoch).
     #  Note: use print_every=0, verbose=False, plot=False where relevant to prevent
     #  output from this function.
-    # ====== YOUR CODE: ======
-    raise NotImplementedError()
-    # ========================
+    
+    model = BinaryClassifier(
+        model=MLP(in_dim=dl_train.dataset.tensors[0].shape[1],
+                  dims=[*[width]*depth, 2], nonlins=[*['relu']*depth, 'none']),
+                    threshold=0.7)
+    optimizer = torch.optim.SGD(params=model.parameters(), lr=0.05, weight_decay=0.005, momentum=0.5)
+    
+    trainer = ClassifierTrainer(model, torch.nn.CrossEntropyLoss(), optimizer)
+    valid_acc = (trainer.fit(dl_train, dl_valid,n_epochs, print_every=0)).test_acc[-1]
+    thresh = select_roc_thresh(model, *dl_valid.dataset.tensors, plot=False)
+    model.threshold = thresh
+    test_acc = (trainer.train_epoch(dl_test)).accuracy
+    
     return model, thresh, valid_acc, test_acc
 
 

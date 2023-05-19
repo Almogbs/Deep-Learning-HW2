@@ -125,9 +125,10 @@ part2_q4 = r"""
 **Your answer:**
 TODO:
 1.A.
+Instead of storing each step (function) grad, we will store the accumalted grad, since the last storing, so the complexity cound be even O(1).
 
 1.B.
-
+We can use the memory we used for the forward 
 2.
 
 3.
@@ -142,14 +143,10 @@ TODO:
 
 
 def part3_arch_hp():
-    n_layers = 0  # number of layers (not including output)
-    hidden_dims = 0  # number of output dimensions for each hidden layer
-    activation = "none"  # activation function to apply after each hidden layer
-    out_activation = "none"  # activation function to apply at the output layer
-    # TODO: Tweak the MLP architecture hyperparameters.
-    # ====== YOUR CODE: ======
-    raise NotImplementedError()
-    # ========================
+    n_layers = 4  # number of layers (not including output)
+    hidden_dims = 10  # number of output dimensions for each hidden layer
+    activation = "relu"  # activation function to apply after each hidden layer
+    out_activation = "relu"  # activation function to apply at the output layer
     return dict(
         n_layers=n_layers,
         hidden_dims=hidden_dims,
@@ -162,16 +159,9 @@ def part3_optim_hp():
     import torch.nn
     import torch.nn.functional
 
-    loss_fn = None  # One of the torch.nn losses
-    lr, weight_decay, momentum = 0, 0, 0  # Arguments for SGD optimizer
-    # TODO:
-    #  - Tweak the Optimizer hyperparameters.
-    #  - Choose the appropriate loss function for your architecture.
-    #    What you returns needs to be a callable, so either an instance of one of the
-    #    Loss classes in torch.nn or one of the loss functions from torch.nn.functional.
-    # ====== YOUR CODE: ======
-    raise NotImplementedError()
-    # ========================
+    loss_fn = torch.nn.CrossEntropyLoss()  # One of the torch.nn losses
+    lr, weight_decay, momentum = 0.02, 0.001, 0.5  # Arguments for SGD optimizer
+
     return dict(lr=lr, weight_decay=weight_decay, momentum=momentum, loss_fn=loss_fn)
 
 
@@ -179,38 +169,29 @@ part3_q1 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+1. The Optimization error is not high since we got relativly low training error across the experiment.
+2. The Generaliztion error is not high since along the experiments with higher w and h, we got higher test accuracy.
+3. Although we got some approximation error (as we can see in the decision plots), it's still not high as the decistion boundry is almost optimal.
+
 
 """
 
 part3_q2 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Since we train with mostly samples from deg=10 and noise=0.2 and less samples from deg=50 and noise-0.25, we will have more uncertainty in the validation, as the samples there can have more noise.
+This will lead to higher FNR 
 
 """
 
 part3_q3 = r"""
 **Your answer:**
 
+We will not chose the ROC as we chose above, since it tries to equalise the FPR and FNR, 
+as we want to same money (FPR) and still save lifes (FNR).
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+1. Since the symptoms will eventually appear, and the patient is not in life-risking situation, we will want to optimaize the money saving, i.e. lower FPR.
+2. In this case, we want to focus on saving the patients life, even if it will cost us money, so we would like to have lower FNR.
 
 """
 

@@ -104,6 +104,9 @@ class Trainer(abc.ABC):
                     #self.model = torch.load(checkpoints) #dangaras
                 epochs_without_improvement += 1
 
+        train_loss = [item.detach().numpy().item() for item in train_loss]
+        test_loss = [item.detach().numpy().item() for item in test_loss]
+
         return FitResult(actual_num_epochs, train_loss, train_acc, test_loss, test_acc)
 
     def save_checkpoint(self, checkpoint_filename: str):
@@ -251,19 +254,20 @@ class ClassifierTrainer(Trainer):
             y = y.to(self.device)
 
         self.model: Classifier
-        batch_loss: float
-        num_correct: int
 
-        # TODO: Train the model on one batch of data.
-        #  - Forward pass
-        #  - Backward pass
-        #  - Update parameters
-        #  - Classify and calculate number of correct predictions
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        self.optimizer.zero_grad()
 
-        return BatchResult(batch_loss, num_correct)
+        scores = self.model.forward(X)
+        loss = self.loss_fn(scores,y)
+        
+        loss.backward()
+        self.optimizer.step()
+        
+        with torch.no_grad():
+            predictions = self.model.classify_scores(scores)
+        score = len(predictions[predictions == y])
+
+        return BatchResult(loss, score)
 
     def test_batch(self, batch) -> BatchResult:
         X, y = batch
@@ -272,18 +276,14 @@ class ClassifierTrainer(Trainer):
             y = y.to(self.device)
 
         self.model: Classifier
-        batch_loss: float
-        num_correct: int
 
         with torch.no_grad():
-            # TODO: Evaluate the model on one batch of data.
-            #  - Forward pass
-            #  - Calculate number of correct predictions
-            # ====== YOUR CODE: ======
-            raise NotImplementedError()
-            # ========================
+            scores = self.model.forward(X)
+            loss = self.loss_fn(scores,y)
+            y_pred = self.model.classify_scores(scores)
+            score = len(y_pred[y_pred == y])                
 
-        return BatchResult(batch_loss, num_correct)
+        return BatchResult(loss, score)
 
 
 class LayerTrainer(Trainer):

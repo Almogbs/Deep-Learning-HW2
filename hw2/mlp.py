@@ -3,6 +3,7 @@ from torch import Tensor, nn
 from typing import Union, Sequence
 from collections import defaultdict
 
+
 ACTIVATIONS = {
     "relu": nn.ReLU,
     "tanh": nn.Tanh,
@@ -44,27 +45,30 @@ class MLP(nn.Module):
             dict, or instances of nn.Module (e.g. an instance of nn.ReLU()).
             Length should match 'dims'.
         """
+        super().__init__()
         assert len(nonlins) == len(dims)
+
         self.in_dim = in_dim
         self.out_dim = dims[-1]
+        
+        layers = []
+        in_features = self.in_dim
 
-        # TODO:
-        #  - Initialize the layers according to the requested dimensions. Use
-        #    either nn.Linear layers or create W, b tensors per layer and wrap them
-        #    with nn.Parameter.
-        #  - Either instantiate the activations based on their name or use the provided
-        #    instances.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        for out_features, act in zip(dims, nonlins):
+            layers.append(nn.Linear(in_features=in_features, out_features=out_features, bias=True))
+            
+            act_func = act
+            if isinstance(act, str):
+                act_func = ACTIVATIONS[act]()
+
+            layers.append(act_func)
+            in_features = out_features
+            
+        self.sequence = nn.Sequential(*layers)
 
     def forward(self, x: Tensor) -> Tensor:
         """
         :param x: An input tensor, of shape (N, D) containing N samples with D features.
         :return: An output tensor of shape (N, D_out) where D_out is the output dim.
         """
-        # TODO: Implement the model's forward pass. Make sure the input and output
-        #  shapes are as expected.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        return self.sequence(x)
