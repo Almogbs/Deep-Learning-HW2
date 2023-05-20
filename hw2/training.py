@@ -88,13 +88,6 @@ class Trainer(abc.ABC):
 
             train_acc.append(train.accuracy)
             test_acc.append(test.accuracy)
-
-            # TODO:
-            #  - Optional: Implement early stopping. This is a very useful and
-            #    simple regularization technique that is highly recommended.
-            #  - Optional: Implement checkpoints. You can use the save_checkpoint
-            #    method on this class to save the model to the file specified by
-            #    the checkpoints argument.
             if best_acc is None or test.accuracy > best_acc:
                 best_acc = test.accuracy
                 epochs_without_improvement = 0
@@ -104,8 +97,8 @@ class Trainer(abc.ABC):
                     #self.model = torch.load(checkpoints) #dangaras
                 epochs_without_improvement += 1
 
-        train_loss = [item.detach().numpy().item() for item in train_loss]
-        test_loss = [item.detach().numpy().item() for item in test_loss]
+        train_loss = [item.detach().item() for item in train_loss]
+        test_loss = [item.detach().item() for item in test_loss]
 
         return FitResult(actual_num_epochs, train_loss, train_acc, test_loss, test_acc)
 

@@ -33,24 +33,11 @@ def mlp_experiment(
     dl_test: DataLoader,
     n_epochs: int,
 ):
-    # TODO:
-    #  - Create a BinaryClassifier model.
-    #  - Train using our ClassifierTrainer for n_epochs, while validating on the
-    #    validation set.
-    #  - Use the validation set for threshold selection.
-    #  - Set optimal threshold and evaluate one epoch on the test set.
-    #  - Return the model, the optimal threshold value, the accuracy on the validation
-    #    set (from the last epoch) and the accuracy on the test set (from a single
-    #    epoch).
-    #  Note: use print_every=0, verbose=False, plot=False where relevant to prevent
-    #  output from this function.
     
     model = BinaryClassifier(
         model=MLP(in_dim=dl_train.dataset.tensors[0].shape[1],
-                  dims=[*[width]*depth, 2], nonlins=[*['relu']*depth, 'none']),
-                    threshold=0.7)
-    optimizer = torch.optim.SGD(params=model.parameters(), lr=0.05, weight_decay=0.005, momentum=0.5)
-    
+                  dims=[*[width]*depth, 2], nonlins=[*['relu']*depth, 'none']), threshold=0.5)
+    optimizer = torch.optim.SGD(params=model.parameters(), lr=0.1, weight_decay=0.005, momentum=0.8)
     trainer = ClassifierTrainer(model, torch.nn.CrossEntropyLoss(), optimizer)
     valid_acc = (trainer.fit(dl_train, dl_valid,n_epochs, print_every=0)).test_acc[-1]
     thresh = select_roc_thresh(model, *dl_valid.dataset.tensors, plot=False)
@@ -108,18 +95,24 @@ def cnn_experiment(
         raise ValueError(f"Unknown model type: {model_type}")
     model_cls = MODEL_TYPES[model_type]
 
-    # TODO: Train
-    #  - Create model, loss, optimizer and trainer based on the parameters.
-    #    Use the model you've implemented previously, cross entropy loss and
-    #    any optimizer that you wish.
-    #  - Run training and save the FitResults in the fit_res variable.
-    #  - The fit results and all the experiment parameters will then be saved
-    #   for you automatically.
-    fit_res = None
-    # ====== YOUR CODE: ======
-    raise NotImplementedError()
-    # ========================
+    train = DataLoader(ds_train, bs_train)
+    test = DataLoader(ds_test, bs_test)
 
+    channels = [[num_filters] * layers_per_block for num_filters in filters_per_layer]
+    channels = [num_filters for block in channels for num_filters in block]
+    model = ArgMaxClassifier(model_cls(
+            next(iter(train))[0][0].shape, out_classes=10, channels=channels, pool_every=pool_every,
+            hidden_dims=hidden_dims, conv_params=dict(kernel_size=3, stride=1, padding=1),
+            pooling_params=dict(kernel_size=2))).to(device)
+
+    loss_fn = torch.nn.CrossEntropyLoss()
+    opt = torch.optim.SGD(params=model.parameters(),
+                          nesterov=True,
+                          lr=lr,
+                          weight_decay=reg,
+                          momentum = 0.5)
+    trainer = ClassifierTrainer(model, loss_fn, opt, device)
+    fit_res = trainer.fit(train, test, num_epochs=epochs, early_stopping=early_stopping)
     save_experiment(run_name, out_dir, cfg, fit_res)
 
 

@@ -77,12 +77,7 @@ class ArgMaxClassifier(Classifier):
     """
 
     def _classify(self, y_proba: Tensor):
-        # TODO:
-        #  Classify each sample to one of C classes based on the highest score.
-        #  Output should be a (N,) integer tensor.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        return torch.argmax(y_proba, dim=1)
 
 
 class BinaryClassifier(Classifier):
@@ -191,7 +186,7 @@ def select_roc_thresh(
     #  Calculate the optimal threshold as optimal_thresh.
     fpr, tpr, thresh = roc_curve(y.detach().numpy(), classifier.predict_proba(x)[:, 1].detach().numpy())
     
-    optimal_thresh_idx = torch.argmax(torch.tensor(tpr) - torch.tensor(fpr)).item()
+    optimal_thresh_idx = torch.argmax(torch.abs(torch.tensor(tpr) - torch.tensor(fpr))).item()
     optimal_thresh = thresh[optimal_thresh_idx]
     
     if plot:

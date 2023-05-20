@@ -216,29 +216,19 @@ def part4_optim_hp():
     import torch.nn
     import torch.nn.functional
 
-    loss_fn = None  # One of the torch.nn losses
-    lr, weight_decay, momentum = 0, 0, 0  # Arguments for SGD optimizer
-    # TODO:
-    #  - Tweak the Optimizer hyperparameters.
-    #  - Choose the appropriate loss function for your architecture.
-    #    What you returns needs to be a callable, so either an instance of one of the
-    #    Loss classes in torch.nn or one of the loss functions from torch.nn.functional.
-    # ====== YOUR CODE: ======
-    raise NotImplementedError()
-    # ========================
+    loss_fn = torch.nn.CrossEntropyLoss()  # One of the torch.nn losses
+    lr, weight_decay, momentum = 0.05, 0.001, 0.1  # Arguments for SGD optimizer
+
     return dict(lr=lr, weight_decay=weight_decay, momentum=momentum, loss_fn=loss_fn)
 
 
 part4_q1 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+1. Number of parameters:
+For the ResidualBlock we have $256*3*3*256 = 589,824$ as the first layer + $256*3*3*256$ = 589,824 as the second layer, thus total of: 1,179,648 parameters.
+For the ResidualBottleneckBlock we have $ 64*1*1*256 = 16,384$ as the first layer + $64*3*3*64$ = 36,864 as the second layer + $256*1*1*64 = 16,384$ as the third layer, thus total of: 69,632 parameters. \n
+We can see that the ResidualBottleneckBlock has much less parameters than the ResidualBlock.
 
 """
 
