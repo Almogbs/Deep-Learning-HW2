@@ -36,8 +36,10 @@ def mlp_experiment(
     
     model = BinaryClassifier(
         model=MLP(in_dim=dl_train.dataset.tensors[0].shape[1],
-                  dims=[*[width]*depth, 2], nonlins=[*['relu']*depth, 'none']), threshold=0.5)
-    optimizer = torch.optim.SGD(params=model.parameters(), lr=0.1, weight_decay=0.005, momentum=0.8)
+                  dims=[*[width]*depth, 2],
+                  nonlins=[*['tanh']*depth, 'none']),
+        threshold=0.5)
+    optimizer = torch.optim.SGD(params=model.parameters(), lr=0.01, weight_decay=0.001, momentum=0.4)
     trainer = ClassifierTrainer(model, torch.nn.CrossEntropyLoss(), optimizer)
     valid_acc = (trainer.fit(dl_train, dl_valid,n_epochs, print_every=0)).test_acc[-1]
     thresh = select_roc_thresh(model, *dl_valid.dataset.tensors, plot=False)

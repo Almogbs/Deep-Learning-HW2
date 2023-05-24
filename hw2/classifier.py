@@ -143,10 +143,9 @@ def plot_decision_boundary_2d(
         cmap=cmap,
     )
 
-    grid = torch.meshgrid(
-        torch.arange(min(x[:, 0]), max(x[:, 0]), dx), 
-        torch.arange(min(x[:, 1]), max(x[:, 1]), dx))
-    x1_grid, x2_grid = grid
+    x1_grid, x2_grid = torch.meshgrid(
+        torch.arange(min(x[:, 0]) - 1, max(x[:, 0]) + 1, step=dx), 
+        torch.arange(min(x[:, 1]) - 1, max(x[:, 1]) + 1, step=dx))
 
     x1 = torch.ravel(x1_grid)
     x2 = torch.ravel(x2_grid)
@@ -177,16 +176,9 @@ def select_roc_thresh(
     :param ax: If plotting, the ax to plot on. If not provided a new figure will be
         created.
     """
-
-    # TODO:
-    #  Calculate the optimal classification threshold using ROC analysis.
-    
-    #  You can use sklearn's roc_curve() which returns the (fpr, tpr, thresh) values.
-    #  Calculate the index of the optimal threshold as optimal_thresh_idx.
-    #  Calculate the optimal threshold as optimal_thresh.
     fpr, tpr, thresh = roc_curve(y.detach().numpy(), classifier.predict_proba(x)[:, 1].detach().numpy())
     
-    optimal_thresh_idx = torch.argmax(torch.abs(torch.tensor(tpr) - torch.tensor(fpr))).item()
+    optimal_thresh_idx = (tpr - fpr).argmax()
     optimal_thresh = thresh[optimal_thresh_idx]
     
     if plot:

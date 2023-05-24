@@ -180,7 +180,9 @@ part3_q2 = r"""
 **Your answer:**
 
 Since we train with mostly samples from deg=10 and noise=0.2 and less samples from deg=50 and noise-0.25, we will have more uncertainty in the validation, as the samples there can have more noise.
-This will lead to higher FNR 
+This will lead to higher FNR because such a data generating process will lead to decision
+boundry that fits the training set, but as we can see from plotting the points of the training set,
+a good decision boundry for them will result higher FNR of the validation set.
 
 """
 
@@ -198,14 +200,17 @@ as we want to same money (FPR) and still save lifes (FNR).
 
 part3_q4 = r"""
 **Your answer:**
+1. Explain the decision boundaries and model performance you obtained for the columns (fixed `depth`, `width` varies).
+2. Explain the decision boundaries and model performance you obtained for the rows (fixed `width`, `depth` varies).
+3. Compare and explain the results for the following pair of configurations, which have the same number of total parameters:
+    - `depth=1, width=32` and `depth=4, width=8`
+3. Explain the effect of threshold selection on the validation set: did it improve the results on the test set? why?
 
+1. When the depth of the network is fixed and the width is increasing, the decision boundaries tend to get more complex in order to fit the data better, which result in better performance. This is because that with higher neuron count in each layer, the network can learn more complex connections from our data.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+2. Now with fixed number of neurons in the layers of the network but the number of layer increases, we also perform more non linear activition layers to our data, which results lower 
+
+3. (A) depth=1, width=32 VS (B) depth=4, width=8
 
 """
 # ==============

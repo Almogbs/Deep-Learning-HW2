@@ -180,7 +180,9 @@ part3_q2 = r"""
 **Your answer:**
 
 Since we train with mostly samples from deg=10 and noise=0.2 and less samples from deg=50 and noise-0.25, we will have more uncertainty in the validation, as the samples there can have more noise.
-This will lead to higher FNR 
+This will lead to higher FNR because such a data generating process will lead to decision
+boundry that fits the training set, but as we can see from plotting the points of the training set,
+a good decision boundry for them will result higher FNR of the validation set.
 
 """
 
