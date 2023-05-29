@@ -273,7 +273,7 @@ class ResNet(CNN):
                         in_channels=in_channels, 
                         channels=self.channels[l:r], 
                         kernel_sizes=[3]*len(self.channels[l:r]),
-                        batchnorm=self.batchnorm, 
+                        batchnorm=self.batchnorm,
                         dropout=self.dropout, 
                         activation_type=self.activation_type, 
                         activation_params=self.activation_params))

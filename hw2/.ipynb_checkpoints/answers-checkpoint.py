@@ -202,13 +202,20 @@ part3_q4 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
 
+
+
+3. Explain the effect of threshold selection on the validation set: did it improve the results on the test set? why?
+
+1. When the depth of the network is fixed and the width is increasing, the decision boundaries able to (and actually do) get more complex in order to fit the data better, which result in better performance. This is because that with higher neuron count in each layer, the network can learn more complex connections from our data.
+
+2. Now with fixed number of neurons in the layers of the network but the number of layer increases, we also perform more non linear activition layers to our data, which results to much more complex decision boudry that leads to better performance overall.
+
+3. (A) depth=1, width=32 VS (B) depth=4, width=8:
+Altough the number of parameters is equal between the two models, the model with more layers (depth=4) showed better results: 87.7% test accuracy (vs 85.0% in the other model). This is probably becaise the higher number of layers, which means that we use more activations layers, we makes our model more complex and get fit to our data better.
+We also can see that the decision boundry is actually much more complex too!
+
+4. The threshold selection on the validation set didn't necessarily ipprove the results on the test set, because as we discuss before in q2, the se our sampled differently, so the threshold on the validation set can be much different from the threshold of the test set.
 """
 # ==============
 # Part 4 (CNN) answers
@@ -227,10 +234,15 @@ def part4_optim_hp():
 part4_q1 = r"""
 **Your answer:**
 
-1. Number of parameters:
-For the ResidualBlock we have $256*3*3*256 = 589,824$ as the first layer + $256*3*3*256$ = 589,824 as the second layer, thus total of: 1,179,648 parameters.
-For the ResidualBottleneckBlock we have $ 64*1*1*256 = 16,384$ as the first layer + $64*3*3*64$ = 36,864 as the second layer + $256*1*1*64 = 16,384$ as the third layer, thus total of: 69,632 parameters. \n
-We can see that the ResidualBottleneckBlock has much less parameters than the ResidualBlock.
+2. Number of floating point operations required to compute an output (qualitative assessment).
+3. Ability to combine the input: (1) spatially (within feature maps); (2) across feature maps.
+
+
+1. Without bottleneck: $ NumParameters = (kernelSize*inChannel + 1)*outChannel*Layers = (3*3*256 + 1)*256*2 = 1,180,160 $
+   With bottleneck: $ NumParameters = (L1KernelSize*inChannel + 1)*L1OutChannel + (L2_kernelSize*L1OutChannel + 1)*L2OutChannel + (L3kernelSize*L2OutChannel + 1)*L3OutChannel = (1*1*256 + 1)*64 + (3*3*64 + 1)*64 + (1*1*64 + 1)*256 = 70016 $
+
+2. Without bottleneck: $ QualitativeAssessmentFPOP = = (256*3*3*64) + (64*3*3*64) = 184,320$
+   With bottleneck: $ QualitativeAssessmentFPOP = (256*1*1*64) + (64*3*3*64) + (64*1*1*256) = 69,632$
 
 """
 
