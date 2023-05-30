@@ -201,12 +201,6 @@ as we want to same money (FPR) and still save lifes (FNR).
 part3_q4 = r"""
 **Your answer:**
 
-
-
-
-
-3. Explain the effect of threshold selection on the validation set: did it improve the results on the test set? why?
-
 1. When the depth of the network is fixed and the width is increasing, the decision boundaries able to (and actually do) get more complex in order to fit the data better, which result in better performance. This is because that with higher neuron count in each layer, the network can learn more complex connections from our data.
 
 2. Now with fixed number of neurons in the layers of the network but the number of layer increases, we also perform more non linear activition layers to our data, which results to much more complex decision boudry that leads to better performance overall.
@@ -234,16 +228,20 @@ def part4_optim_hp():
 part4_q1 = r"""
 **Your answer:**
 
-2. Number of floating point operations required to compute an output (qualitative assessment).
 3. Ability to combine the input: (1) spatially (within feature maps); (2) across feature maps.
 
 
 1. Without bottleneck: $ NumParameters = (kernelSize*inChannel + 1)*outChannel*Layers = (3*3*256 + 1)*256*2 = 1,180,160 $
    With bottleneck: $ NumParameters = (L1KernelSize*inChannel + 1)*L1OutChannel + (L2_kernelSize*L1OutChannel + 1)*L2OutChannel + (L3kernelSize*L2OutChannel + 1)*L3OutChannel = (1*1*256 + 1)*64 + (3*3*64 + 1)*64 + (1*1*64 + 1)*256 = 70016 $
+We can see that with bottleneck, we got much less parameters.
 
-2. Without bottleneck: $ QualitativeAssessmentFPOP = = (256*3*3*64) + (64*3*3*64) = 184,320$
-   With bottleneck: $ QualitativeAssessmentFPOP = (256*1*1*64) + (64*3*3*64) + (64*1*1*256) = 69,632$
+2. Given a layer, we can estimate the floating point operations by: inChannel*KernelSize*OutChannel since each channel in the input, is the result of activate the kernel (conv) by the input channels.
+Without bottleneck: $ QualitativeAssessmentFPOP = L1FPOP + L2FPOP = (256*3*3*64) + (64*3*3*64) = 184,320$
+With bottleneck: $ QualitativeAssessmentFPOP = 1FPOP + L2FPOP + L3FPOP = (256*1*1*64) + (64*3*3*64) + (64*1*1*256) = 69,632$   
+We can see that also here,  with bottleneck, we got much less floating point operations.
 
+3. Since without bottleneck, we are using 2 3x3 convolutions, the network can learn in each layer spatial relationships and patterns that are relevant within the feature map. With bottleneck we are using only one 3x3 convolution so it's not as good within the feature map.
+Combining the input across feature maps is better with bottleneck since the input pass through more layers that reduce the channels and increase it again - which gives us the ability to combine the input across feature maps (different channels).
 """
 
 # ==============
@@ -256,51 +254,37 @@ part5_q1 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+1. We can see from the graphs that when the depth of the network Increased, the network got worse accuracy. Lower depth give us less complex network which means less prone to overffiting. The best results produced by L=4, as we explain before, the model here is less prone the overfitting and have fewer parameters to train.
 
+2. For L=8,16 the network wasn't trainable.
+One thing that can cause it is the vanishing gradients problem, and the fact that the loss is zero across the epochs confirmed it.
+To resolve the vanishing gradients problem we could use the residualBlocks and skip connections like in the ResNet - we can see that even with L>16 the network managed to learn!
+Another way to resolve it is to stablize the on-going values using batchnorm layer between the network layers.
 """
 
 part5_q2 = r"""
 **Your answer:**
 
+Also here we can see that the lower the depth, the better the performance of the network, And also here, like 1.1 the network wont learn when the depth=8.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+Regarding the width of the network, we ccan see that the wider the network is, the better performance its achieving. This may be due to the fact that more neurons lets as learn more connections in our data, in complex ones in particular.
 """
 
 part5_q3 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+Just like the experiments before, also here when the depth is lower, we see better performance.
+One difference is, in this experiment, the model suffers from the vanishing gradients problem even when the depth is 4 (which wasnt a problem in 1.1 and 1.2).
 """
 
 part5_q4 = r"""
 **Your answer:**
 
+Also in the experiment, like the experiment 1.1 and 1.3 we can see that lower layer count lead to better performance.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+One difference between this experiment to the regular CNN ones, is that it seems like we solve the vanishing gradients problem that happend to us by using the ResNes and skip connections (like we proposed earlier), we can se that now the network is trainable even with much higher L's like L=32, when the reguler CNN failed even for L=8.
+From the otherhand, the learning is much slower, and to reach the same level of accuracy, took ~10X the epochs!
 
 """
 
