@@ -298,13 +298,17 @@ From the otherhand, the learning is much slower, and to reach the same level of 
 part6_q1 = r"""
 **Your answer:**
 
+Regarding the first image:
+1. The model perform very bad by classify each object wrong, as it detect persons (even with 0.9 accuracy) where its in face a dolphin. In addition to that, it even classify the dolphin fin as a surdboard!
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Regarding the second image:
+1. Here the model perform better than the first image as it classify correctly the object one dog. Although it classify the other dogs as cats and missed on cat and didnt classify it at all!
+
+Regarding the first image:
+2. One explanation for the poor performance here is that the model (yolov5) doesn't even train on dolphins at all! and since it wast trained on persons, and there's some resemblance between the two, it led to this results. Simple solution could be train the model on actual dolphins.
+
+Regarding the second image:
+2. The models classefid the dogs as a cat probably because it wasnt trained using shiba dogs, which may resembled cats, and it missed the cat probably because the box of the cat intersect with the dog box, which can lead to drop the box of the cat. Changing the model parameters to allow intersection between the object boxes and adding shiba images to train the model on may increase its performance.
 
 """
 
@@ -312,6 +316,7 @@ An equation: $e^{i\pi} -1 = 0$
 part6_q2 = r"""
 **Your answer:**
 
+ WHAT WHERE?
 
 Write your answer using **markdown** and $\LaTeX$:
 ```python
@@ -327,24 +332,21 @@ part6_q3 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Picture 1:
+
+Picture 2:
+
+Picture 3:
 
 """
 
 part6_bonus = r"""
 **Your answer:**
 
+Picture 1: The input was a dog, and the model classified it as a zebra with 0.62 accuracy. The reason for that is that there is a stripe shape shadow on the dog's body, which is similar to the zebra's stripes. The model was trained on zebras,and probably connected black striped on a 4 legged mammel body to zebra with high probability, so it classified the dog as a zebra.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Picture 2: The iput was a concert corewd, and beside the more prominent and seperated people in the photo, it didnt manage to csegment and classify the rest of the people in the photo. The reason for that may be that the model was trained on individual people, but not on concert crowds, so it didnt manage to propely segment/seperate the different people in the crowd and classify them as people.
+
+Picture 3:
 
 """
