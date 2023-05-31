@@ -60,4 +60,5 @@ python $@
 
 echo "*** SLURM BATCH JOB '$JOB_NAME' DONE ***"
 EOF
+:q
 
