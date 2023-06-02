@@ -332,9 +332,9 @@ part6_q3 = r"""
 **Your answer:**
 
 
-Picture 1:
+Picture 1: The input was a dog, and the model classified it as a zebra with 0.62 accuracy. The reason for that is that there is a stripe shape shadow on the dog's body, which is similar to the zebra's stripes. The model was trained on zebras,and probably connected black striped on a 4 legged mammel body to zebra with high probability, so it classified the dog as a zebra.
 
-Picture 2:
+Picture 2: The iput was a concert corewd, and beside the more prominent and seperated people in the photo, it didnt manage to csegment and classify the rest of the people in the photo. The reason for that may be that the model was trained on individual people, but not on concert crowds, so it didnt manage to propely segment/seperate the different people in the crowd and classify them as people.
 
 Picture 3:
 
