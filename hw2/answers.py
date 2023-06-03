@@ -123,15 +123,54 @@ less space for the batches.
 
 part2_q4 = r"""
 **Your answer:**
-TODO:
-1.A.
-Instead of storing each step (function) grad, we will store the accumalted grad, since the last storing, so the complexity cound be even O(1).
+1. In both directions we use checkpointing and save only the essential values for the computation of the gradient.
+1.1 
 
-1.B.
-We can use the memory we used for the forward 
-2.
+A way to reduce the memory complexity for computing the gradient using *forward* mode AD (maintaining the $\mathcal{O}(n)$ computation cost) is to use initialize exactly 2 variables that save the gradient and the current function output, and run along all functions in $f$ . So the algorithm will be as such:
 
-3.
+grad_holder = 1
+
+func_result = $X$ 
+
+for  ($1<=i<=n$) :
+
+----  grad_holder = grad_holder * $f_i'$(func_result)
+
+----  func_result = $f_i$(func_result)
+
+return grad_holder
+
+this way we reduce the memory complexity for computing the gradient using $\mathcal{O}(1)$ memory.
+
+1.2
+
+Similarly, a way to reduce the memory complexity for computing the gradient using *backward* mode AD (maintaining the $\mathcal{O}(n)$ computation cost) is to initialize 2 "holders", but for the backwards we need to keep the func_results along the whole run and then calc the grad from the end to the beginning. So the algorithm will be as such:
+
+grad_holder = 1
+
+func_result = []
+
+func_result[0] = $X$
+
+for  ($0<=i<=n-1$) :
+
+---- tmp = $f_i$(func_result[i])
+
+---- func_result[i+1] = tmp
+
+for  ($i=n-1, i>=0, i--$) :
+
+---- grad_holder = $f_i'$(func_result[i])
+
+return grad_holder
+
+this way we reduce the memory complexity for computing the gradient using $\mathcal{O}(1)$ memory.
+
+
+
+2. These techniques *can* be generalized for arbitrary computational graphs using checkpointing. The idea is to split the graph into subgraphs and compute the gradient of each subgraph separately. This way we can reduce the memory complexity of the gradient computation to $\mathcal{O}(1)$. As long as we keep only the essential values for the computation of the gradient, we can compute the gradient of each subgraph separately and then combine them to get the gradient of the whole graph.
+
+3. Backprop algorithm can benefit muxh from these techniques when applied to *deep* architectures (e.g VGGs, ResNets) because the memory complexity of the gradient computation is $\mathcal{O}(1)$ and not $\mathcal{O}(n)$, which is a huge improvement while trainig. Also, the number of parameters and layers in such architectures is very large, so the memory $\mathcal{O}(n)$ complexity will be translated to a huge real memory usage, and demand a strong and expensive hardware, so the $\mathcal{O}(1)$ memory complexity is a huge advantage.
 
 """
 
@@ -332,21 +371,15 @@ part6_q3 = r"""
 **Your answer:**
 
 
-Picture 1:
+Picture 1: The input was a dog, and the model classified it as a zebra with 0.62 accuracy. The reason for that is that there is a stripe shape shadow on the dog's body, which is similar to the zebra's stripes. The model was trained on zebras,and probably connected black striped on a 4 legged mammel body to zebra with high probability, so it classified the dog as a zebra.
 
-Picture 2:
+Picture 2: The iput was a concert corewd, and beside the more prominent and seperated people in the photo, it didnt manage to csegment and classify the rest of the people in the photo. The reason for that may be that the model was trained on individual people, but not on concert crowds, so it didnt manage to propely segment/seperate the different people in the crowd and classify them as people.
 
-Picture 3:
-
+Picture 3: The input was 2 persons infornt of the mirror takinge flash photography, and the model didnt classify both of them as persons. The reason for that is that the model was trained on persons, but the flash ilunuinated the persons in a way that the model didnt manage to classify them as persons.
 """
 
 part6_bonus = r"""
 **Your answer:**
 
-Picture 1: The input was a dog, and the model classified it as a zebra with 0.62 accuracy. The reason for that is that there is a stripe shape shadow on the dog's body, which is similar to the zebra's stripes. The model was trained on zebras,and probably connected black striped on a 4 legged mammel body to zebra with high probability, so it classified the dog as a zebra.
-
-Picture 2: The iput was a concert corewd, and beside the more prominent and seperated people in the photo, it didnt manage to csegment and classify the rest of the people in the photo. The reason for that may be that the model was trained on individual people, but not on concert crowds, so it didnt manage to propely segment/seperate the different people in the crowd and classify them as people.
-
-Picture 3:
 
 """
